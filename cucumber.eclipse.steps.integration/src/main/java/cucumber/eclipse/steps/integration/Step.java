@@ -7,6 +7,8 @@ import org.eclipse.core.resources.IResource;
 public class Step {
 
 	private String text;
+	private String fileLocation;
+	private String contextHelpText;
 	private IResource source;
 	private int lineNumber;
 	private String lang;
@@ -15,8 +17,18 @@ public class Step {
 	public String getText() {
 		return text;
 	}
+	public String getContextHelpText() {
+		return contextHelpText;
+	}
+	public String getFileLocation() {
+		return fileLocation;
+	}
+	public void setFileLocation(String fileLocation) {
+		this.fileLocation = fileLocation.replace("."+source.getFileExtension(), "");
+	}
 	public void setText(String text) {
 		this.text = text;
+		this.contextHelpText = this.text.replace("\"([^\"]*)\"", "\"<string>\"").replace("^", "").replace("$","");		
 		this.compiledText = Pattern.compile(text);
 	}
 	public IResource getSource() {

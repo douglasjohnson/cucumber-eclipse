@@ -72,6 +72,7 @@ public class StepDefinitions implements IStepDefinitions {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		} 
+		
 		return steps;
 	}
 	
@@ -100,6 +101,7 @@ public class StepDefinitions implements IStepDefinitions {
 					if (cukeAnnotation != null) {
 						Step step = new Step();
 						step.setSource(method.getResource());
+						step.setFileLocation(method.getResource().getName());
 						step.setText(getAnnotationText(annotation));
 						step.setLineNumber(getLineNumber(compUnit, annotation));
 						step.setLang(cukeAnnotation.getLang());
