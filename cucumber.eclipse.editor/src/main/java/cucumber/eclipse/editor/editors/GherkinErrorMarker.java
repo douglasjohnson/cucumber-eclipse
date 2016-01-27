@@ -205,4 +205,14 @@ public class GherkinErrorMarker implements Formatter {
 				region.getOffset(),
 				region.getOffset() + region.getLength());
 	}
+
+	@Override
+	public void endOfScenarioLifeCycle(Scenario scenario) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void startOfScenarioLifeCycle(Scenario scenario) {
+		// TODO Auto-generated method stub
+	}
 }

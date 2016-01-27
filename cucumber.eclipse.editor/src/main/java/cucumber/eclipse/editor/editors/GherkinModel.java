@@ -131,6 +131,16 @@ public class GherkinModel {
 				}
 				return lastline;
 			}
+
+			@Override
+			public void endOfScenarioLifeCycle(Scenario scenario) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void startOfScenarioLifeCycle(Scenario scenario) {
+				// TODO Auto-generated method stub
+			}
 		});
 		
 		try {

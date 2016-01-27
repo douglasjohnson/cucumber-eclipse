@@ -151,7 +151,6 @@ public class Editor extends TextEditor {
             public void documentChanged(DocumentEvent event) {
                 validateAndMark();
             }
-
             @Override
             public void documentAboutToBeChanged(DocumentEvent event) {
                 //
