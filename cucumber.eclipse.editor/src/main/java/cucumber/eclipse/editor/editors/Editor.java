@@ -1,8 +1,5 @@
 package cucumber.eclipse.editor.editors;
 
-import gherkin.lexer.LexingError;
-import gherkin.parser.Parser;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +10,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -36,6 +35,8 @@ import cucumber.eclipse.editor.Activator;
 import cucumber.eclipse.editor.markers.MarkerIds;
 import cucumber.eclipse.editor.markers.MarkerManager;
 import cucumber.eclipse.editor.steps.ExtensionRegistryStepProvider;
+import gherkin.lexer.LexingError;
+import gherkin.parser.Parser;
 
 public class Editor extends TextEditor {
 
@@ -144,6 +145,18 @@ public class Editor extends TextEditor {
 	protected void doSetInput(IEditorInput newInput) throws CoreException {
 		super.doSetInput(newInput);
 		input = newInput;
+        IDocument doc = getDocumentProvider().getDocument(input);
+        doc.addDocumentListener(new IDocumentListener() {
+            @Override
+            public void documentChanged(DocumentEvent event) {
+                validateAndMark();
+            }
+
+            @Override
+            public void documentAboutToBeChanged(DocumentEvent event) {
+                //
+            }
+        });
 		validateAndMark();
 	}
 

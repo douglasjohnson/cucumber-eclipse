@@ -1,19 +1,27 @@
 package cucumber.eclipse.editor.editors;
 
+import org.eclipse.jface.text.DefaultTextHover;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
+import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.source.DefaultAnnotationHover;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+
+import cucumber.eclipse.editor.quickAssist.GherkinQuickAssistProcessor;
 
 public class GherkinConfiguration extends TextSourceViewerConfiguration {
 
@@ -25,22 +33,19 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 		this.editor = editor;
 		this.colorManager = colorManager;
 	}
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE};
-	}
 
+	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+		return new String[] { IDocument.DEFAULT_CONTENT_TYPE };
+	}
 
 	protected GherkinKeywordScanner getGherkinKeywordScanner() {
 		if (keywordScanner == null) {
 			keywordScanner = new GherkinKeywordScanner(colorManager);
-			keywordScanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(GherkinColors.DEFAULT))));
+			keywordScanner
+					.setDefaultReturnToken(new Token(new TextAttribute(colorManager.getColor(GherkinColors.DEFAULT))));
 		}
 		return keywordScanner;
 	}
-
 
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
@@ -49,19 +54,18 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-
 		return reconciler;
 	}
 
 	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-        ContentAssistant ca = new ContentAssistant();
-        IContentAssistProcessor cap = new GherkinKeywordsAssistProcessor();
-        ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
-        ca.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-        return ca;
+		ContentAssistant ca = new ContentAssistant();
+		IContentAssistProcessor cap = new GherkinKeywordsAssistProcessor();
+		ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
+		ca.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+		return ca;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -81,5 +85,22 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public int getTabWidth(ISourceViewer sourceViewer) {
 		return 2;
+	}
+
+	@Override
+	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		return new DefaultAnnotationHover();
+	}
+
+	@Override
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
+		return new DefaultTextHover(sourceViewer);
+	}
+
+	@Override
+	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
+		IQuickAssistAssistant quickAssistAssistant = new QuickAssistAssistant();
+		quickAssistAssistant.setQuickAssistProcessor(new GherkinQuickAssistProcessor(this.editor));
+		return quickAssistAssistant;
 	}
 }
