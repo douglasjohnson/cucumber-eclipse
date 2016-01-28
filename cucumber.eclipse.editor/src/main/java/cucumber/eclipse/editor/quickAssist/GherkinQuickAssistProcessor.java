@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.eclipse.jface.text.quickassist.IQuickAssistProcessor;
@@ -16,6 +17,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 
+import cucumber.eclipse.editor.editors.GherkinCompletionProposal;
 import cucumber.eclipse.editor.editors.Editor;
 import cucumber.eclipse.editor.markers.MarkerIds;
 import cucumber.eclipse.editor.steps.ExtensionRegistryStepProvider;
@@ -80,11 +82,9 @@ public class GherkinQuickAssistProcessor implements IQuickAssistProcessor {
         List<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
         Position annotationPosition = annotationModel.getPosition(annotation);
         for (Step step : getAllSteps()) {
-            String replacementText = step.getText().replace("\"([^\"]*)\"", "\"<string>\"").replace("^", "")
-                    .replace("$", "");
-            proposals.add(new UnmatchedStepCompletionProposal(replacementText, annotationPosition.getOffset(),
-                    annotationPosition.getLength(), replacementText.length()));
-            annotation.markDeleted(true);
+            String replacementText = step.getContextHelpText();
+            proposals.add(new GherkinCompletionProposal(new CompletionProposal(replacementText, annotationPosition.getOffset(), annotationPosition.getLength(),
+            		replacementText.length()), step));
         }
         return proposals;
     }

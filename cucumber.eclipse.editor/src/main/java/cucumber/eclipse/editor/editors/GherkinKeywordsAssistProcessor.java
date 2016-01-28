@@ -38,7 +38,6 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 
     public final Image ICON = Activator.getImageDescriptor("icons/cukes.gif")
             .createImage();
-    public final Image STEP_DEFINITION_ICON = Activator.getImageDescriptor("icons/stepdefinition.gif").createImage();
 
     public GherkinKeywordsAssistProcessor(Editor editor) {
     	this.editor = editor;
@@ -91,8 +90,8 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                for (Step step: steps) {
 	                	if (step.getContextHelpText().startsWith(typed.substring(typed.indexOf(" ")+1, typed.length()))) {
 	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(),
-		                            offset - keywordArray[0].length(), keywordArray[0].length(), step.getContextHelpText().length(), STEP_DEFINITION_ICON, null, null, null);
-	                		CucumberCompletionProposal ccp = new CucumberCompletionProposal(p, step);
+		                            offset - keywordArray[0].length(), keywordArray[0].length(), step.getContextHelpText().length());
+	                		GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
 		                	result.add(ccp);
 	                	}
 	                }
@@ -110,9 +109,8 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
                 		
                 Set<Step> steps = new ExtensionRegistryStepProvider().getStepsInEncompassingProject(featurefile);
                 for (Step step: steps) {
-	                    CompletionProposal p = new CompletionProposal(step.getContextHelpText(),
-	                            offset, 0, step.getContextHelpText().length(), STEP_DEFINITION_ICON, null, null, null);            	
-	                    CucumberCompletionProposal ccp = new CucumberCompletionProposal(p, step);
+	                    CompletionProposal p = new CompletionProposal(step.getContextHelpText(), offset, 0, step.getContextHelpText().length());            	
+	                    GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
 	                	result.add(ccp);
               	}
             }

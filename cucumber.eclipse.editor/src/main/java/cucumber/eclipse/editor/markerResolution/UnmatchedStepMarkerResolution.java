@@ -34,7 +34,7 @@ class UnmatchedStepMarkerResolution implements IMarkerResolution, IRunnableWithP
 
     @Override
     public String getLabel() {
-        return step.getText().replace("\"([^\"]*)\"", "\"<string>\"").replace("^", "").replace("$", "");
+        return step.getContextHelpText();
     }
 
     @Override
@@ -67,7 +67,7 @@ class UnmatchedStepMarkerResolution implements IMarkerResolution, IRunnableWithP
             int markerStart = (int) marker.getAttribute("charStart");
             int markerEnd = (int) marker.getAttribute("charEnd");
             resolvedContent = resolvedContent.substring(0, markerStart)
-                    + getLabel()
+                    + step.getContextHelpText()
                     + resolvedContent.substring(markerEnd);
             featureFile.setContents(new ByteArrayInputStream(resolvedContent.getBytes()), false, true, monitor);
             monitor.worked(1);

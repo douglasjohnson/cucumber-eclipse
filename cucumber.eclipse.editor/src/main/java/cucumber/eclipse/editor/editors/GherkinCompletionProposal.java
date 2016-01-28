@@ -9,15 +9,18 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+import cucumber.eclipse.editor.Activator;
 import cucumber.eclipse.steps.integration.Step;
 
-public class CucumberCompletionProposal implements ICompletionProposal, ICompletionProposalExtension6 {
+public class GherkinCompletionProposal implements ICompletionProposal, ICompletionProposalExtension6 {
 	
-	CompletionProposal wrappedProposal;
-	Step step;
+	protected CompletionProposal wrappedProposal;
+	protected Step step;
+	
+    public final Image STEP_DEFINITION_ICON = Activator.getImageDescriptor("icons/stepdefinition.gif").createImage();
 
-	public CucumberCompletionProposal(CompletionProposal p, Step step) {
-		this.wrappedProposal = p; 
+	public GherkinCompletionProposal(CompletionProposal completionProposal, Step step) {
+		this.wrappedProposal = completionProposal; 
 		this.step = step;
 	}
 	
@@ -25,7 +28,6 @@ public class CucumberCompletionProposal implements ICompletionProposal, IComplet
 	public StyledString getStyledDisplayString() {
 		StyledString styledDisplayString = new StyledString(step.getContextHelpText());
 		styledDisplayString.append(" - "+step.getFileLocation(), StyledString.QUALIFIER_STYLER);
-		
 		return styledDisplayString;
 	}
 
@@ -51,12 +53,12 @@ public class CucumberCompletionProposal implements ICompletionProposal, IComplet
 
 	@Override
 	public Image getImage() {
-		return wrappedProposal.getImage();
+		return STEP_DEFINITION_ICON;
 	}
 
 	@Override
-	public Point getSelection(IDocument arg0) {
-		return wrappedProposal.getSelection(arg0);
+	public Point getSelection(IDocument document) {
+		return wrappedProposal.getSelection(document);
 	}
 
 }
