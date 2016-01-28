@@ -60,7 +60,7 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		ContentAssistant ca = new ContentAssistant();
-		IContentAssistProcessor cap = new GherkinKeywordsAssistProcessor();
+		IContentAssistProcessor cap = new GherkinKeywordsAssistProcessor(editor);
 		ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
 		ca.setInformationControlCreator(getInformationControlCreator(sourceViewer));
 		return ca;
