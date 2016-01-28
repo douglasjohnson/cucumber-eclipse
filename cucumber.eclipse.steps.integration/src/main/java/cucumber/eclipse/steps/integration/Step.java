@@ -14,6 +14,7 @@ public class Step {
     private String lang;
     private Pattern compiledText;
     private String[] parameters;
+    private static final int PARAMETER_REGEX_LENGTH = 8;
 
     public String getText() {
         return text;
@@ -33,8 +34,29 @@ public class Step {
 
     public void setText(String text) {
         this.text = text;
-        this.contextHelpText = this.text.replace("\"([^\"]*)\"", "\"<string>\"").replace("^", "").replace("$", "");
+        this.contextHelpText = this.text.replace("^", "").replace("$", "");
+        this.contextHelpText = replaceParameters(this.contextHelpText);
         this.compiledText = Pattern.compile(text);
+    }
+
+    private String replaceParameters(String annotation) {
+        String annotationWithParameters = annotation;
+        int parameterCount = 0;
+        int index = 0;
+        while ((index = annotationWithParameters.indexOf("\"([\"]*)\"")) != -1) {
+            annotationWithParameters = annotationWithParameters.substring(0, index)
+                    + formatParameter(parameters[parameterCount])
+                    + annotationWithParameters.substring(index + PARAMETER_REGEX_LENGTH);
+            parameterCount++;
+        }
+        return annotationWithParameters;
+    }
+
+    private String formatParameter(String parameter) {
+        String formattedParameter = parameter;
+        formattedParameter = formattedParameter.substring(formattedParameter.indexOf(" ") + 1);
+        formattedParameter = formattedParameter.replaceAll("([a-z])([A-Z]+)", "$1_$2").toUpperCase();
+        return "\"<" + formattedParameter + ">\"";
     }
 
     public IResource getSource() {

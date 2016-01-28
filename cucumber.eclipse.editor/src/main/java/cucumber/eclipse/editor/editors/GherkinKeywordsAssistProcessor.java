@@ -1,7 +1,5 @@
 package cucumber.eclipse.editor.editors;
 
-import gherkin.I18n;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,9 +10,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.JFaceTextUtil;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -27,6 +23,7 @@ import org.eclipse.ui.IFileEditorInput;
 import cucumber.eclipse.editor.Activator;
 import cucumber.eclipse.editor.steps.ExtensionRegistryStepProvider;
 import cucumber.eclipse.steps.integration.Step;
+import gherkin.I18n;
 
 public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	//TODO This line copy from i18n,because of private var.
@@ -36,8 +33,7 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
     private final IContextInformation[] NO_CONTEXTS = {};
     private ICompletionProposal[] NO_COMPLETIONS = {};
 
-    public final Image ICON = Activator.getImageDescriptor("icons/cukes.gif")
-            .createImage();
+    public final Image ICON = Activator.getImageDescriptor("icons/cukes.gif").createImage();
 
     public GherkinKeywordsAssistProcessor(Editor editor) {
     	this.editor = editor;
@@ -63,13 +59,12 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
             // line of cursor locate,and from begin to cursor.
             IRegion line = viewer.getDocument().getLineInformationOfOffset(offset);
             String typed = viewer.getDocument().get(line.getOffset(), offset - line.getOffset());
-            String[] keywordArray = typed.split("\\s+");
             typed = typed.replaceAll("^\\s+", "");
             
             List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 
             if (typed.length() > 0) {
-            	
+            	String[] keywordArray = typed.split("\\s+");
             	
             	if (keywordArray.length == 1) {
 	                // all key words
@@ -90,8 +85,8 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                for (Step step: steps) {
 	                	if (step.getContextHelpText().startsWith(typed.substring(typed.indexOf(" ")+1, typed.length()))) {
 	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(),
-		                            offset - keywordArray[0].length(), keywordArray[0].length(), step.getContextHelpText().length());
-	                		GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
+		                            offset - (keywordArray[0].length()-keywordArray[1].length()), keywordArray[1].length(), step.getContextHelpText().length());
+	                		ICompletionProposal ccp = new GherkinCompletionProposal(p, step);
 		                	result.add(ccp);
 	                	}
 	                }

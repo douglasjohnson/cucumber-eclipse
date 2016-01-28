@@ -106,7 +106,6 @@ public class StepDefinitions implements IStepDefinitions {
                         step.setLineNumber(getLineNumber(compUnit, annotation));
                         step.setLang(cukeAnnotation.getLang());
                         steps.add(step);
-
                     }
                 }
             }
