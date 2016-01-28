@@ -84,7 +84,7 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                		int replacementLength = typed.length() - keyWordLength;
 	                		replacementOffset = replacementOffset - replacementLength;
 	                		
-	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(), replacementOffset, replacementLength, step.getContextHelpText().length(), STEP_DEFINITION_ICON, null, null, null);
+	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(), replacementOffset, replacementLength, step.getContextHelpText().length());
 	                		GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
 		                	result.add(ccp);
 	                	}
