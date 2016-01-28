@@ -56,7 +56,7 @@ public class Step {
         String formattedParameter = parameter;
         formattedParameter = formattedParameter.substring(formattedParameter.indexOf(" ") + 1);
         formattedParameter = formattedParameter.replaceAll("([a-z])([A-Z]+)", "$1_$2").toUpperCase();
-        return "<" + formattedParameter + ">";
+        return "\"<" + formattedParameter + ">\"";
     }
 
     public IResource getSource() {
