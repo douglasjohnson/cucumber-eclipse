@@ -63,6 +63,7 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 		IContentAssistProcessor cap = new GherkinKeywordsAssistProcessor(editor);
 		ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
 		ca.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+		ca.enableColoredLabels(true);
 		return ca;
 	}
 
