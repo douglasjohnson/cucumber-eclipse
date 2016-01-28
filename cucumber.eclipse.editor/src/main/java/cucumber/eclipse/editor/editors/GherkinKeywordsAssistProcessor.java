@@ -53,24 +53,19 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
             }
             I18n i18n = new I18n(lang);
             
-
-            List<String> stepKeywords = i18n.getStepKeywords();
-
             // line of cursor locate,and from begin to cursor.
             IRegion line = viewer.getDocument().getLineInformationOfOffset(offset);
-            String typed = viewer.getDocument().get(line.getOffset(), offset - line.getOffset());
-            typed = typed.replaceAll("^\\s+", "");
+            String typed = viewer.getDocument().get(line.getOffset(), offset - line.getOffset()).replaceAll("^\\s+", "");
             
             List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 
             if (typed.length() > 0) {
-            	String[] keywordArray = typed.split("\\s+");
             	
-            	if (keywordArray.length == 1) {
+            	if (!doesLineStartWithKeyword(typed,i18n)) {
 	                // all key words
 	                List<String> keywords = allKeywords(i18n);
 	                for (String string : keywords) {
-	                    if (string.startsWith(typed) && typed.indexOf(string) == -1) {
+	                    if (string.toLowerCase().startsWith(typed.toLowerCase()) && typed.indexOf(string) == -1) {
 	                        CompletionProposal p = new CompletionProposal(string,
 	                                offset - typed.length(), typed.length(),
 	                                string.length(), ICON, null, null, null);
@@ -83,10 +78,14 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                		
 	                Set<Step> steps = new ExtensionRegistryStepProvider().getStepsInEncompassingProject(featurefile);
 	                for (Step step: steps) {
-	                	if (step.getContextHelpText().startsWith(typed.substring(typed.indexOf(" ")+1, typed.length()))) {
-	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(),
-		                            offset - (keywordArray[0].length()-keywordArray[1].length()), keywordArray[1].length(), step.getContextHelpText().length());
-	                		ICompletionProposal ccp = new GherkinCompletionProposal(p, step);
+	                	if (step.getContextHelpText().toLowerCase().startsWith(typed.toLowerCase().substring(typed.indexOf(" ")+1, typed.length()))) {
+	                		int replacementOffset = offset;
+	                		int keyWordLength = getKeywordAtBeginningOfLine(typed, i18n).length();
+	                		int replacementLength = typed.length() - keyWordLength;
+	                		replacementOffset = replacementOffset - replacementLength;
+	                		
+	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(), replacementOffset, replacementLength, step.getContextHelpText().length());
+	                		GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
 		                	result.add(ccp);
 	                	}
 	                }
@@ -106,7 +105,7 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
                 for (Step step: steps) {
 	                    CompletionProposal p = new CompletionProposal(step.getContextHelpText(), offset, 0, step.getContextHelpText().length());            	
 	                    GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
-	                	result.add(ccp);
+	                    result.add(ccp);
               	}
             }
             
@@ -162,4 +161,24 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 		}
 		
     };
+    
+    private boolean doesLineStartWithKeyword(String typed, I18n i18n) {
+    	List<String> keywords = allKeywords(i18n);
+        for (String string : keywords) {
+            if (typed.startsWith(string)) {
+            	return true;
+            }
+        }
+        return false;
+    }
+    
+    private String getKeywordAtBeginningOfLine(String typed, I18n i18n) {
+    	List<String> keywords = allKeywords(i18n);
+        for (String keyword : keywords) {
+            if (typed.startsWith(keyword)) {
+            	return keyword;
+            }
+        }
+        return null;
+    }
 }
