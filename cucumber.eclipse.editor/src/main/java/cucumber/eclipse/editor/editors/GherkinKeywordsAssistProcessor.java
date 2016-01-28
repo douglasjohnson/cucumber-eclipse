@@ -64,13 +64,12 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
             // line of cursor locate,and from begin to cursor.
             IRegion line = viewer.getDocument().getLineInformationOfOffset(offset);
             String typed = viewer.getDocument().get(line.getOffset(), offset - line.getOffset());
-            String[] keywordArray = typed.split("\\s+");
             typed = typed.replaceAll("^\\s+", "");
             
             List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 
             if (typed.length() > 0) {
-            	
+            	String[] keywordArray = typed.split("\\s+");
             	
             	if (keywordArray.length == 1) {
 	                // all key words
@@ -91,7 +90,7 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                for (Step step: steps) {
 	                	if (step.getContextHelpText().startsWith(typed.substring(typed.indexOf(" ")+1, typed.length()))) {
 	                		CompletionProposal p = new CompletionProposal(step.getContextHelpText(),
-		                            offset - keywordArray[0].length(), keywordArray[0].length(), step.getContextHelpText().length(), STEP_DEFINITION_ICON, null, null, null);
+		                            offset - (keywordArray[0].length()-keywordArray[1].length()), keywordArray[1].length(), step.getContextHelpText().length(), STEP_DEFINITION_ICON, null, null, null);
 	                		CucumberCompletionProposal ccp = new CucumberCompletionProposal(p, step);
 		                	result.add(ccp);
 	                	}
