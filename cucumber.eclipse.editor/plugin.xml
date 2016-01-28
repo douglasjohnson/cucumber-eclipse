@@ -289,4 +289,22 @@
 			class="cucumber.eclipse.editor.preferences.CucumberPreferencePage"
 			name="Cucumber" />
    </extension>
+   
+      <extension
+       point="org.eclipse.ui.handlers">
+       <handler
+           commandId="com.verint.commands.GenerateStepDefinitionsHandler"
+           class="com.verint.handlers.GenerateStepDefinitionsHandler">
+       </handler>
+   </extension>
+   <extension
+       point="org.eclipse.ui.menus">
+       <menuContribution
+           locationURI="menu:project">
+           <command
+               label="Generate Step Definition Listing"
+               commandId="com.verint.commands.GenerateStepDefinitionsHandler">
+           </command>
+       </menuContribution>
+   </extension>
 </plugin>
