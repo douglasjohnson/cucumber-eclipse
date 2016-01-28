@@ -60,7 +60,6 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
             List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 
             if (typed.length() > 0) {
-            	
             	if (!doesLineStartWithKeyword(typed,i18n)) {
 	                // all key words
 	                List<String> keywords = allKeywords(i18n);
@@ -91,22 +90,24 @@ public class GherkinKeywordsAssistProcessor implements IContentAssistProcessor {
 	                }
             	}
             } else {
-                List<String> keywords = allKeywords(i18n);
-                for (String string : keywords) {
-                    CompletionProposal p = new CompletionProposal(string,
-                            offset, 0, string.length(), ICON, null, null, null);
-                    result.add(p);
-                }
-                
-                IEditorInput input = editor.getEditorInput();
-                IFile featurefile = ((IFileEditorInput) input).getFile();
-                		
-                Set<Step> steps = new ExtensionRegistryStepProvider().getStepsInEncompassingProject(featurefile);
-                for (Step step: steps) {
-	                    CompletionProposal p = new CompletionProposal(step.getContextHelpText(), offset, 0, step.getContextHelpText().length());            	
-	                    GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
-	                    result.add(ccp);
-              	}
+            	if (!doesLineStartWithKeyword(typed,i18n)) {
+	                List<String> keywords = allKeywords(i18n);
+	                for (String string : keywords) {
+	                    CompletionProposal p = new CompletionProposal(string,
+	                            offset, 0, string.length(), ICON, null, null, null);
+	                    result.add(p);
+	                }
+            	} else {
+                    IEditorInput input = editor.getEditorInput();
+	                IFile featurefile = ((IFileEditorInput) input).getFile();
+	                		
+	                Set<Step> steps = new ExtensionRegistryStepProvider().getStepsInEncompassingProject(featurefile);
+	                for (Step step: steps) {
+		                    CompletionProposal p = new CompletionProposal(step.getContextHelpText(), offset, 0, step.getContextHelpText().length());            	
+		                    GherkinCompletionProposal ccp = new GherkinCompletionProposal(p, step);
+		                    result.add(ccp);
+	              	}
+            	}
             }
             
             Collections.sort(result, CompletionProposalComparator);
