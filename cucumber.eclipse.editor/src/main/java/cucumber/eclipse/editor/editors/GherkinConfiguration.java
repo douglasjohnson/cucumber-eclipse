@@ -100,8 +100,9 @@ public class GherkinConfiguration extends TextSourceViewerConfiguration {
 
 	@Override
 	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
-		IQuickAssistAssistant quickAssistAssistant = new QuickAssistAssistant();
+		QuickAssistAssistant quickAssistAssistant = new QuickAssistAssistant();
 		quickAssistAssistant.setQuickAssistProcessor(new GherkinQuickAssistProcessor(this.editor));
+		quickAssistAssistant.enableColoredLabels(true);
 		return quickAssistAssistant;
 	}
 }
